@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Your Watch List</h1>
+    </header>
+
+    <div class="wrapper">
+        <button class="show-input-form btn-normal">Tambah Tontonan</button>
+
+        <div class="container bg-white shadow form-container" id="add-todo" hidden>
+            <h2 class="container-header text-center">Tambah yang harus dilakukan</h2>
+            <form class="form" action="#" id="form">
+                <div class="form-group form-title">
+                    <label for="title">Masukan Nama Film/Series/Drama</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group form-title">
+                    <label for="episode">Masukan Episode (Jika Ada)</label>
+                    <input type="text" id="episode" name="episode" required>
+                </div>
+                <!-- <div class="form-group form-title">
+                    <label for="date">Masukkan tanggal harus selesai</label>
+                    <input type="date" id="date" name="date" required>
+                </div> -->
+                <div class="button-container">
+                    <button id="cancel-input" class="btn-submit">Cancel</button>
+                    <input type="submit" value="Submit" name="Submit" class="btn-submit">
+                </div>
+            </form>
+        </div>
+
+        <div class="container">
+            <h2 class="container-header">Akan Ditonton</h2>
+            <div class="list-item" id="watch-list">
+                
+            </div>
+        </div>
+
+        <div class="container">
+            <h2 class="container-header">Sudah Ditonton</h2>
+            <div class="list-item" id="completed-list">
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
