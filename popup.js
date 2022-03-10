@@ -15,11 +15,12 @@ function generateId() {
     return +new Date();
 }
 
-function generateWatchObject(id, title, episode, timestamp, isWatched) {
+function generateWatchObject(id, title, episode, watchLink, timestamp, isWatched) {
     return {
         id,
         title,
         episode,
+        watchLink,
         timestamp,
         isWatched
     }
@@ -43,26 +44,45 @@ function findWatchItemIndex(itemId) {
 
 function makeWatchlist(watchObject) {
 
-    const {id, title, episode, timestamp, isWatched} = watchObject;
-
-    const textTitle = document.createElement("h2");
-    textTitle.innerText = title;
-
-    const textEpisode = document.createElement("p");
-    textEpisode.innerText = `Episode: ${episode}`;
-
-    // const textTimestamp = document.createElement("p");
-    // textTimestamp.innerText = new Date() - timestamp;
+    const {id, title, episode, watchLink, timestamp, isWatched} = watchObject;
 
     const textContainer = document.createElement("div");
     textContainer.classList.add("inner")
-    textContainer.append(textTitle, textEpisode/*, textTimestamp*/);
+
+    const textTitle = document.createElement("h2");
+    textTitle.innerText = title;
+    textContainer.append(textTitle);
+
+    if(episode != '') {
+        const textEpisode = document.createElement("p");
+        textEpisode.innerText = `Episode: ${episode}`;
+        textContainer.append(textEpisode);
+    }
+
+    if(watchLink != '') {
+        const textWatchLink = document.createElement("a");
+        textWatchLink.href = watchLink;
+        textWatchLink.target = "_blank";
+
+        const linkbutton = document.createElement("button");
+        linkbutton.innerText = "Tonton";
+        linkbutton.classList.add('btn-small');
+
+        textWatchLink.append(linkbutton);
+
+        textContainer.append(textWatchLink);
+    }
+
+    // const textTimestamp = document.createElement("p");
+    // textTimestamp.innerText = new Date() - timestamp;
+    // textContainer.append(textTitle, textEpisode, textWatchLink/*, textTimestamp*/);
 
     const container = document.createElement("div");
     container.classList.add("item", "shadow")
     container.append(textContainer);
     container.setAttribute("id", `watchlist-${id}`);
     
+
     if(isWatched){
 
         const undoButton = document.createElement("button");
@@ -95,22 +115,22 @@ function makeWatchlist(watchObject) {
 function addWatchList() {
     const tittle = document.getElementById("title").value;
     const episode = document.getElementById("episode").value;
+    const watchLink = document.getElementById("watch-link").value;
     const timestamp = new Date();
 
     const generatedID = generateId();
-    const watchObject = generateWatchObject(generatedID, tittle, episode, timestamp, false)
+    const watchObject = generateWatchObject(generatedID, tittle, episode, watchLink, timestamp, false)
     watchlist.push(watchObject)
     
     document.dispatchEvent(new Event(RENDER_EVENT))
 
-    // close form
     var showFormButton = document.querySelector('.show-input-form');
     var inputFormContainer = document.getElementById('add-todo');
     
     showFormButton.hidden = false;
     inputFormContainer.hidden = true;
 
-    // saveData();
+    saveData();
 }
 
 function addToCompletedWatchlist(watchItemId) {
@@ -120,7 +140,7 @@ function addToCompletedWatchlist(watchItemId) {
 
     watchItemTarget.isWatched = true;
     document.dispatchEvent(new Event(RENDER_EVENT));
-    // saveData();
+    saveData();
 }
 
 function removeWatchItem(wathItemId) {
@@ -129,7 +149,7 @@ function removeWatchItem(wathItemId) {
     watchlist.splice(watchItemTarget, 1);
     
     document.dispatchEvent(new Event(RENDER_EVENT));
-    // saveData();
+    saveData();
 }
 
 function undoCompletedWatch(watchItemId){
@@ -139,7 +159,28 @@ function undoCompletedWatch(watchItemId){
 
     watchItemTarget.isWatched = false;
     document.dispatchEvent(new Event(RENDER_EVENT));
-    // saveData();
+    saveData();
+}
+
+function saveData() {
+    if(isStorageExist()) {
+        const watchlist_data = JSON.stringify(watchlist);
+        localStorage.setItem(STORAGE_KEY, watchlist_data);
+    }
+}
+
+function loadDataFromStorage(){
+    const serializedData = localStorage.getItem(STORAGE_KEY);
+
+    let data = JSON.parse(serializedData);
+
+    if(data !== null) {
+        for(watchItem of data){
+            watchlist.push(watchItem);
+        }
+    }
+
+    document.dispatchEvent(new Event(RENDER_EVENT));
 }
 
 // Event Listener
@@ -152,16 +193,15 @@ document.addEventListener("DOMContentLoaded", function () {
         addWatchList();
     });
 
-    // if(isStorageExist()){
-    //     loadDataFromStorage();
-    // }
+    if(isStorageExist()){
+        loadDataFromStorage();
+    }
 });
 
 document.addEventListener(RENDER_EVENT, function () {
     const UncompletedWatchlist = document.getElementById("watch-list");
     const CompletedWatchList = document.getElementById("completed-list");
 
-    // clearing list item
     UncompletedWatchlist.innerHTML = ""
     CompletedWatchList.innerHTML = ""
 

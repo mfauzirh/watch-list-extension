@@ -118,6 +118,24 @@ input[type="date"] {
   color: white;
 }
 
+.btn-small {
+  width: fit-content;
+  border: none;
+  font-family: Raleway;
+  border-radius: 16px;
+  padding: 6px 12px;
+  border: 2px solid #3863d9;
+  color: black;
+  font-size: 10px;
+  margin-top: auto;
+  cursor: pointer;
+}
+
+.btn-small:hover {
+  background: #3863d9;
+  color: white;
+}
+
 .btn-submit {
   width: fit-content;
   border: none;
