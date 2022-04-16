@@ -15,14 +15,15 @@ function generateId() {
     return +new Date();
 }
 
-function generateWatchObject(id, title, episode, watchLink, timestamp, isWatched) {
+function generateWatchObject(id, title, episode, watchLink, timestamp, isWatched, note) {
     return {
         id,
         title,
         episode,
         watchLink,
         timestamp,
-        isWatched
+        isWatched,
+        note
     }
 }
 
@@ -44,7 +45,7 @@ function findWatchItemIndex(itemId) {
 
 function makeWatchlist(watchObject) {
 
-    const {id, title, episode, watchLink, timestamp, isWatched} = watchObject;
+    const {id, title, episode, watchLink, timestamp, isWatched, note} = watchObject;
 
     const textContainer = document.createElement("div");
     textContainer.classList.add("inner")
@@ -71,6 +72,12 @@ function makeWatchlist(watchObject) {
         textWatchLink.append(linkbutton);
 
         textContainer.append(textWatchLink);
+    }
+
+    if(note != '') {
+        const textnote = document.createElement("p");
+        textnote.innerText = `Catatan: ${note}`;
+        textContainer.append(textnote);
     }
 
     // const textTimestamp = document.createElement("p");
@@ -116,10 +123,11 @@ function addWatchList() {
     const tittle = document.getElementById("title").value;
     const episode = document.getElementById("episode").value;
     const watchLink = document.getElementById("watch-link").value;
+    const note = document.getElementById("watch-note").value;
     const timestamp = new Date();
 
     const generatedID = generateId();
-    const watchObject = generateWatchObject(generatedID, tittle, episode, watchLink, timestamp, false)
+    const watchObject = generateWatchObject(generatedID, tittle, episode, watchLink, timestamp, false, note)
     watchlist.push(watchObject)
     
     document.dispatchEvent(new Event(RENDER_EVENT))
